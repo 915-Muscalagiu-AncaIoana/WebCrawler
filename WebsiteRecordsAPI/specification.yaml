@@ -1,0 +1,958 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Web Crawler API
+  description: API managing websites and executions for Web Crawlers
+
+paths:
+  /website_records:
+    get:
+      description: Gets all website records
+      responses:
+        '200':
+          description: Successfully returns a list of website records
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - url
+                    properties:
+                      url:
+                        type: string
+                      periodicity:
+                        type: datetime
+                      label:
+                        type: string
+                      crawl_time:
+                        type: time
+                      end_time:
+                        type: time
+                      status:
+                        type: string
+                      tags:
+                        type: array
+                        items:
+                          type: string
+
+  /website_records/crawled:
+    post:
+      description: Gets all the website records that crawled a given url
+      responses:
+        '200':
+          description: Successfully returns a list of website records
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - url
+                    properties:
+                      url:
+                        type: string
+                      periodicity:
+                        type: datetime
+                      label:
+                        type: string
+                      crawl_time:
+                        type: time
+                      end_time:
+                        type: time
+                      status:
+                        type: string
+                      tags:
+                        type: array
+                        items:
+                          type: string
+        '400':
+          description: No url provided in request
+  /website_record/{website_id}:
+    put:
+      description: Updates a website record identified by an id  and returns the old record
+      responses:
+        '200':
+          description: Successfully updates a website record
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                  regex:
+                    type: string
+                  active:
+                    type: boolean
+                  periodicity:
+                    type: datetime
+                  label:
+                    type: string
+        '404':
+          description: Returns error website to be updated not found by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: The request is conflicting, the types of the fields are incorrect
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                regex:
+                  type: string
+                  description: New regex of the website to be updated
+                active:
+                  type: boolean
+                  description: New active status of the website to be updated
+                periodicity:
+                  type: datetime
+                  description: New periodicity of the website to be updated
+
+
+  /websites:
+    get:
+      description: Returns a list of websites to be crawled
+      responses:
+        '200':
+          description: Successfully returns a list of websites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - url
+                  properties:
+                    url:
+                      type: string
+                    regex:
+                      type: string
+                    active:
+                      type: boolean
+                    periodicity:
+                      type: datetime
+                    label:
+                      type: string
+                    tags:
+                      type: array
+                      items:
+                        type: string
+  /website:
+    post:
+      description: Add a new website record
+      responses:
+        '200':
+          description: Successfully added a website record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: The request body is not in json format or the request does not contain the url and all the required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: The request is conflicting, there is already a website record with this url or the types of the fields are incorrect
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                regex:
+                  type: string
+                  description: New regex of the website to be updated
+                active:
+                  type: boolean
+                  description: New active status of the website to be updated
+                periodicity:
+                  type: datetime
+                  description: New periodicity of the website to be updated
+                label:
+                  type: string
+                  description: New label of the website to be updated
+                tags:
+                  type: array
+                  description: New list of tags of the website to be updated
+                  items:
+                    type: string
+  /website/{website_id}:
+    get:
+      description: Returns a website record identified by an id
+      responses:
+        '200':
+          description: Successfully returns a website record
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                  regex:
+                    type: string
+                  active:
+                    type: boolean
+                  periodicity:
+                    type: datetime
+                  label:
+                    type: string
+                  tags:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Returns error website not found by url
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    put:
+      description: Updates a website record identified by an url and returns the old record
+      responses:
+        '200':
+          description: Successfully updates a website record
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                  regex:
+                    type: string
+                  active:
+                    type: boolean
+                  periodicity:
+                    type: datetime
+                  label:
+                    type: string
+        '404':
+          description: Returns error website to be updated not found by url
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: The request is conflicting, the types of the fields are incorrect
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                regex:
+                  type: string
+                  description: New regex of the website to be updated
+                active:
+                  type: boolean
+                  description: New active status of the website to be updated
+                periodicity:
+                  type: datetime
+                  description: New periodicity of the website to be updated
+                label:
+                  type: string
+                  description: New label of the website to be updated
+                tags:
+                  type: array
+                  description: New list of tags of the website to be updated
+
+    delete:
+      description: Deletes a website record with a given url and returns it
+      responses:
+        '200':
+          description: Successfully deletes a website record
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                  regex:
+                    type: string
+                  active:
+                    type: boolean
+                  periodicity:
+                    type: datetime
+                  label:
+                    type: string
+        '404':
+          description: Returns error website not found by url
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /crawled_data:
+    get:
+      description: Returns a list of websites along with their crawled data
+      responses:
+        '200':
+          description: Successfully returns a list of websites along with their crawled data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - url
+                  properties:
+                    url:
+                      type: string
+                    regex:
+                      type: string
+                    active:
+                      type: boolean
+                    periodicity:
+                      type: datetime
+                    label:
+                      type: string
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                    crawlTime:
+                      type: datetime
+                    title:
+                      type: string
+                    links:
+                      type: array
+                      items:
+                        type: string
+    post:
+      description: Add a new crawled data record for a website with a given url or updates it if existent
+      responses:
+        '200':
+          description: Successfully added a crawled_data record or updated it
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: The request body is not in json format or the request does not contain the url and all the required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: -url
+              properties:
+                url:
+                  type: string
+                crawlTime:
+                  type: datetime
+                title:
+                  type: string
+                links:
+                  type: array
+                  items:
+                    type: string
+  /crawled_data/{website_id}:
+    get:
+      description: Returns a website along with its crawled data
+      responses:
+        '200':
+          description: Successfully returns a website along with its crawled data
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                  regex:
+                    type: string
+                  active:
+                    type: boolean
+                  periodicity:
+                    type: datetime
+                  label:
+                    type: string
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                  crawlTime:
+                    type: datetime
+                  title:
+                    type: string
+                  links:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Returns error crawled_data not found by website id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    put:
+      description: Updates a crawled_data record identified by a website id and returns the old record
+      responses:
+        '200':
+          description: Successfully updates a crawled_data record
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                  crawlTime:
+                    type: datetime
+                  title:
+                    type: string
+                  links:
+                    type: array
+                    items:
+                      type: string
+
+        '404':
+          description: Returns error crawled_data to be updated not found by url
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: The request is conflicting, the types of the fields are incorrect
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                regex:
+                  type: string
+                  description: New regex of the crawled_data to be updated
+                active:
+                  type: boolean
+                  description: New active status of the crawled_data to be updated
+                periodicity:
+                  type: datetime
+                  description: New periodicity of the crawled_data to be updated
+                label:
+                  type: string
+                  description: New label of the crawled_data to be updated
+                tags:
+                  type: array
+                  description: New list of tags of the crawled_data to be updated
+
+    delete:
+      description: Deletes a crawled_data record with a given website id and returns it
+      responses:
+        '200':
+          description: Successfully deletes a crawled_data record
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                  crawlTime:
+                    type: datetime
+                  title:
+                    type: string
+                  links:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Returns error crawled_data not found by url
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /executions:
+    get:
+      description: Returns a list of all executions
+      responses:
+        '200':
+          description: Successfully returns a list of executions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                  properties:
+                    id:
+                      type: integer
+                    website_url:
+                      type: string
+                    status:
+                      type: string
+                    start_time:
+                      type: datatime
+                    end_time:
+                      type: datatime
+                    nr_of_sites_crawled:
+                      type: integer
+                    label:
+                      type: string
+  /executions/loading:
+    get:
+      description: Returns all the executions that have a loading status along with information about the website they crawl
+      responses:
+        '200':
+          description: Successfully returns a list of loading executions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                  properties:
+                    id:
+                      type: integer
+                    website_url:
+                      type: string
+                    status:
+                      type: string
+                    start_time:
+                      type: datatime
+                    end_time:
+                      type: datatime
+                    nr_of_sites_crawled:
+                      type: integer
+                    label:
+                      type: string
+                    identifier:
+                      type: integer
+                    regex:
+                      type: string
+                    periodicity:
+                      type: time
+                    url:
+                      type: string
+
+  /executions/{website_id}:
+    get:
+      description: Returns a list of all executions of a given website
+      responses:
+        '200':
+          description: Successfully returns a list of executions of a given website
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                  properties:
+                    id:
+                      type: integer
+                    website_url:
+                      type: string
+                    status:
+                      type: string
+                    start_time:
+                      type: datatime
+                    end_time:
+                      type: datatime
+                    nr_of_sites_crawled:
+                      type: integer
+        '404':
+          description: Returns error website not found by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /executions/{website_id}/latest:
+    get:
+      description: Returns the last execution of a given website
+      responses:
+        '200':
+          description: Successfully returns the last execution of a given website
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                properties:
+                  id:
+                    type: integer
+                  website_url:
+                    type: string
+                  status:
+                    type: string
+                  start_time:
+                    type: datatime
+                  end_time:
+                    type: datatime
+                  nr_of_sites_crawled:
+                    type: integer
+        '404':
+          description: Returns error website not found by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /execution/empty:
+    post:
+      description: Add a new loading empty execution with no start time and end time
+      responses:
+        '201':
+          description: Successfully added the loading execution
+        '400':
+          description: The url of the websited crawled was not provided
+        '409':
+          description: Invalid parameters of execution
+
+  /execution:
+    put:
+      description: Updates an existing execution record
+      responses:
+        '200':
+          description: Successfully updated an execution record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: The request body is not in json format or the request does not contain all the required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: The request is conflicting, there is no execution with the given id to update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: -url
+              properties:
+                id:
+                  type: integer
+                url:
+                  type: string
+                status:
+                  type: string
+                start_time:
+                  type: datatime
+                end_time:
+                  type: datatime
+                nr_of_sites_crawled:
+                  type: integer
+    post:
+      description: Add a new execution record
+      responses:
+        '200':
+          description: Successfully added an execution record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: The request body is not in json format or the request does not contain all the required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: The request is conflicting, there is no website with the given url for which an execution can be added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: -url
+              properties:
+                id:
+                  type: integer
+                url:
+                  type: string
+                status:
+                  type: string
+                start_time:
+                  type: datatime
+                end_time:
+                  type: datatime
+                nr_of_sites_crawled:
+                  type: integer
+
+  /execution/{website_id}:
+    post:
+      description: Add a new execution record for a website with a given url
+      responses:
+        '200':
+          description: Successfully added an execution record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: The request body is not in json format or the request does not contain all the required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: The request is conflicting, there is no website with the given id for which an execution can be added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: -url
+              properties:
+                status:
+                  type: string
+                start_time:
+                  type: datatime
+                end_time:
+                  type: datatime
+                nr_of_sites_crawled:
+                  type: integer
+  /execution/{execution_id}:
+    delete:
+      description: Deletes an execution record
+      responses:
+        '200':
+          description: Successfully deletes an execution record
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                properties:
+                  id:
+                    type: integer
+                  website_url:
+                    type: string
+                  status:
+                    type: string
+                  start_time:
+                    type: datatime
+                  end_time:
+                    type: datatime
+                  nr_of_sites_crawled:
+                    type: integer
+
+        '404':
+          description: Returns error execution not found by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /links:
+    get:
+      description: Returns all links along with their parent nodes
+      responses:
+        '200':
+          description: Successfully returns all the crawled links
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                properties:
+                  link:
+                    type: string
+                  crawl_time:
+                    type: time
+                  crawled_data_url:
+                    type: string
+                  title:
+                    type: string
+  /link:
+    put:
+      description: Updates the information about a crawled link
+      responses:
+        '200':
+          description: Successfully updates a crawled link
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                properties:
+                  link:
+                    type: string
+                  crawl_time:
+                    type: time
+                  crawled_data_url:
+                    type: string
+                  title:
+                    type: string
+        '404':
+          description: There is no link with this url and parent node
+        '400':
+          description: The url and parent node for the crawled link were not provided
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required:
+                  - url
+                properties:
+                  link:
+                    type: string
+                  crawled_data_url:
+                    type: string
+                  title:
+                    type: string
+                  crawl_time:
+                    type: time

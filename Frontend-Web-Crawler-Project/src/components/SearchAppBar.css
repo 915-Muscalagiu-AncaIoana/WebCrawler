@@ -1,0 +1,30 @@
+#add-button {
+    color: white;
+    margin-right: 10px;
+}
+
+#refresh-button {
+    color: white;
+    margin-right: 10px;
+}
+
+#pages-icon-button {
+    margin-right: 20px;
+}
+
+#simple-select {
+    color: white;
+}
+
+#app-bar {
+    background-color: lightseagreen;
+}
+
+.MuiSelect-icon {
+    color: white;
+}
+
+.search-type {
+   display: inline;
+    text-align: center;
+}

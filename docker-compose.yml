@@ -1,0 +1,71 @@
+version: '3'
+services:
+  redis:
+    image: redis:4.0.6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/redis
+
+  spider:
+    image: spider
+    container_name: spider
+    build: ./WebSpider
+    restart: always
+    ports:
+        - '5001:5001'
+    volumes:
+        - ./WebSpider:/WebSpider
+
+  worker:
+    image: spider:latest
+    depends_on:
+        - redis
+        - api
+    command: rq worker --url redis://redis:6379
+    links:
+        - redis
+  frontend:
+    build: 
+      context: ./Frontend-Web-Crawler-Project
+      dockerfile: Dockerfile
+    command: npm run start
+    restart: always
+    links:
+      - api
+    container_name: frontend
+    ports:
+      - "3000:3000"        
+    volumes: 
+      - ./:/frontend
+      - /frontend/node_modules
+  
+  api:
+    container_name: api
+    image: api
+    build: ./WebsiteRecordsAPI
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:123456789@database:5432/webcrawler
+    
+    restart: always
+    depends_on:
+      - database
+
+  database:
+    container_name: database
+    image: postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=123456789
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=webcrawler
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata: {}

@@ -1,0 +1,14 @@
+.fill-window {
+    height: 100%;
+    position: absolute;
+    top: auto;
+    left: auto;
+    width: 100%;
+    max-width: fit-content;
+    overflow: hidden;
+    
+}
+
+#circle-button {
+    color: white;
+}

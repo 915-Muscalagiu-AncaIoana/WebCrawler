@@ -1,0 +1,22 @@
+.edit {
+    margin-right: 10px;
+}
+
+input {
+    display: inline;
+}
+label {
+    display: inline;
+}
+.form-group-col-md-4 {
+    display: inline;
+    margin: 10px;
+}
+.form-control {
+    display: inline;
+}
+.row {
+    display: inline;
+    margin-bottom: 10px;
+}
+
